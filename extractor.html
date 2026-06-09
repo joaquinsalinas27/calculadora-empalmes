@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Extractor de Parámetros – Fourthane</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#F4F6F9;color:#1a2332;min-height:100vh}
+header{background:#1a2332;padding:14px 28px;display:flex;align-items:center;gap:16px}
+header img{height:32px}
+header h1{color:#fff;font-size:16px;font-weight:500;letter-spacing:.02em}
+header span{color:#7a9bb5;font-size:13px;margin-left:4px}
+.main{max-width:1100px;margin:0 auto;padding:24px 20px}
+.page-title{font-size:20px;font-weight:600;margin-bottom:4px;color:#1a2332}
+.page-sub{font-size:13px;color:#5a6a7a;margin-bottom:20px}
+.tipo-seg{display:flex;gap:8px;margin-bottom:20px}
+.tipo-btn{flex:1;padding:10px;font-size:14px;border:1.5px solid #d0d8e4;border-radius:8px;cursor:pointer;background:#fff;color:#5a6a7a;font-weight:500;transition:all .15s}
+.tipo-btn.on{background:#1a2332;color:#fff;border-color:#1a2332}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid #e0e6ef;border-radius:12px;padding:20px}
+.sec-title{font-size:11px;font-weight:600;color:#7a9bb5;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.field{margin-bottom:12px}
+.field label{font-size:13px;color:#5a6a7a;display:block;margin-bottom:4px}
+.field input{width:100%;padding:8px 12px;font-size:14px;border:1px solid #d0d8e4;border-radius:6px;background:#fff;color:#1a2332;transition:border .15s}
+.field input:focus{outline:none;border-color:#3a7bd5;box-shadow:0 0 0 3px #3a7bd520}
+.ang-display{background:linear-gradient(135deg,#1a2332,#2d4a6b);border-radius:12px;padding:20px;color:#fff;text-align:center;margin-bottom:16px}
+.ang-label{font-size:12px;color:#7ab3d9;margin-bottom:4px}
+.ang-value{font-size:48px;font-weight:700;color:#fff;letter-spacing:-1px}
+.ang-deg{font-size:22px;color:#7ab3d9}
+.ang-formula{font-size:12px;color:#5a8ab0;margin-top:6px;font-family:monospace}
+.tri-wrap{display:flex;justify-content:center;margin:12px 0}
+.out-table{width:100%;border-collapse:collapse;font-size:13px}
+.out-table tr{border-bottom:1px solid #f0f3f7}
+.out-table tr:last-child{border-bottom:none}
+.out-table td{padding:7px 4px}
+.out-table td:first-child{color:#5a6a7a}
+.out-table td:last-child{font-weight:600;text-align:right;color:#1a2332}
+.badge{display:inline-block;padding:2px 10px;border-radius:6px;font-size:12px;font-weight:600}
+.badge-blue{background:#e8f0fc;color:#1a4fa0}
+.badge-amber{background:#fef3e2;color:#8a5a00}
+.badge-green{background:#e6f7ee;color:#1a6b3a}
+.vulc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px}
+.vulc-item{background:#f4f6f9;border-radius:8px;padding:10px;text-align:center}
+.vulc-label{font-size:11px;color:#7a9bb5;margin-bottom:2px}
+.vulc-val{font-size:20px;font-weight:700;color:#1a2332}
+.vulc-unit{font-size:11px;color:#7a9bb5}
+.btn-primary{width:100%;padding:11px;font-size:14px;font-weight:600;border:none;border-radius:8px;background:#3a7bd5;color:#fff;cursor:pointer;margin-top:12px;transition:background .15s}
+.btn-primary:hover{background:#2d5fa8}
+.btn-link{display:block;text-align:center;margin-top:10px;font-size:12px;color:#3a7bd5;text-decoration:none}
+.btn-link:hover{text-decoration:underline}
+.divider{border:none;border-top:1px solid #e8eef5;margin:16px 0}
+.copied{background:#1a6b3a!important}
+.info-box{background:#e8f0fc;border-left:3px solid #3a7bd5;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:#1a4fa0;margin-bottom:16px}
+</style>
+</head>
+<body>
+<header>
+  <svg width="110" height="28" viewBox="0 0 110 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="28" height="28" rx="4" fill="#3a7bd5"/>
+    <text x="14" y="19" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="13" fill="#fff">F4</text>
+    <text x="36" y="19" font-family="sans-serif" font-weight="600" font-size="13" fill="#fff">FOURTHANE</text>
+  </svg>
+  <h1>Extractor de Parámetros <span>/ Splice Diagram Reader</span></h1>
+</header>
+
+<div class="main">
+  <p class="page-title">Lectura de diagrama de empalme</p>
+  <p class="page-sub">Ingresa los datos del diagrama PDF → obtén los valores listos para ingresar en la <a href="https://joaquinsalinas27.github.io/calculadora-empalmes/" style="color:#3a7bd5">Calculadora Fourthane</a></p>
+
+  <div class="info-box">
+    💡 El ángulo de bias se calcula automáticamente a partir de los catetos: <strong>θ = arctan(LA / B)</strong>. No es necesario medirlo del diagrama.
+  </div>
+
+  <div class="tipo-seg">
+    <button class="tipo-btn on" id="btn-tela" onclick="setTipo('tela')">▤ &nbsp;Tela / Fabric (EP)</button>
+    <button class="tipo-btn" id="btn-cable" onclick="setTipo('cable')">⌇ &nbsp;Cable de acero (ST)</button>
+  </div>
+
+  <div class="grid2">
+    <!-- INPUTS -->
+    <div class="card">
+      <p class="sec-title">Dimensiones del diagrama</p>
+
+      <div class="field">
+        <label>Ancho de correa B (mm)</label>
+        <input type="number" id="B" value="1219" oninput="calc()">
+      </div>
+
+      <!-- TELA -->
+      <div id="sec-tela">
+        <div class="field">
+          <label>Bias length — cateto horizontal LA (mm)</label>
+          <input type="number" id="LA" value="381" oninput="calc()">
+        </div>
+        <div class="field">
+          <label>Finger length / largo del paso lst (mm)</label>
+          <input type="number" id="FL" value="813" oninput="calc()">
+        </div>
+        <div class="field">
+          <label>N° de lonas / plies</label>
+          <input type="number" id="NP" value="2" min="1" max="6" oninput="calc()">
+        </div>
+        <div class="field">
+          <label>Espesor total de correa (mm)</label>
+          <input type="number" id="ESP" value="18" oninput="calc()">
+        </div>
+        <div class="field">
+          <label>Pull back (mm)</label>
+          <input type="number" id="PB" value="50" oninput="calc()">
+        </div>
+        <div class="field">
+          <label>Gap (mm)</label>
+          <input type="number" id="GAP" value="3" oninput="calc()">
+        </div>
+      </div>
+
+      <!-- CABLE -->
+      <div id="sec-cable" style="display:none">
+        <div class="field">
+          <label>Bias length — cateto horizontal LA (mm)</label>
+          <input type="number" id="LA_c" value="381" oninput="calc()">
+        </div>
+        <div class="field">
+          <label>Diámetro de cable d (mm)</label>
+          <input type="number" id="DC" value="8.9" step="0.1" oninput="calc()">
+        </div>
+        <div class="field">
+          <label>Paso entre cables t (mm)</label>
+          <input type="number" id="TC" value="15" step="0.5" oninput="calc()">
+        </div>
+        <div class="field">
+          <label>N° de escalones (nst)</label>
+          <input type="number" id="NST" value="3" min="1" max="6" oninput="calc()">
+        </div>
+        <div class="field">
+          <label>Longitud de escalón lst (mm)</label>
+          <input type="number" id="LST" value="1200" oninput="calc()">
+        </div>
+      </div>
+
+      <hr class="divider">
+      <p class="sec-title">Parámetros de vulcanización</p>
+      <div class="field">
+        <label>Temperatura (°C)</label>
+        <input type="number" id="TTEMP" value="145" oninput="calc()">
+      </div>
+      <div class="field">
+        <label>Presión (bar)</label>
+        <input type="number" id="TPRES" value="9" step="0.5" oninput="calc()">
+      </div>
+      <div class="field">
+        <label>Tiempo de vulcanizado (min)</label>
+        <input type="number" id="TTIME" value="62" oninput="calc()">
+      </div>
+    </div>
+
+    <!-- OUTPUTS -->
+    <div>
+      <div class="ang-display">
+        <p class="ang-label">Ángulo de bias calculado</p>
+        <div><span class="ang-value" id="ang-out">17.4</span><span class="ang-deg">°</span></div>
+        <p class="ang-formula" id="ang-formula">θ = arctan(381 / 1219) = 17.4°</p>
+      </div>
+
+      <div class="tri-wrap">
+        <svg id="tri-svg" width="240" height="140" viewBox="0 0 240 140">
+          <polygon id="tri-poly" points="20,120 220,120 220,20" fill="#e8f0fc" stroke="#3a7bd5" stroke-width="1.5"/>
+          <line id="tri-hline" x1="20" y1="120" x2="220" y2="120" stroke="#3a7bd5" stroke-width="2"/>
+          <line id="tri-vline" x1="220" y1="20" x2="220" y2="120" stroke="#1a6b3a" stroke-width="2" stroke-dasharray="5,3"/>
+          <text id="tri-B" x="120" y="136" text-anchor="middle" font-size="12" fill="#1a4fa0" font-family="sans-serif">B = 1219 mm</text>
+          <text id="tri-LA" x="228" y="75" text-anchor="start" font-size="12" fill="#1a6b3a" font-family="sans-serif">LA</text>
+          <text id="tri-ang" x="50" y="112" text-anchor="start" font-size="13" fill="#3a7bd5" font-weight="bold" font-family="sans-serif">θ</text>
+          <path id="arc-path" d="M 48,120 A 28,28 0 0 1 35,100" fill="none" stroke="#3a7bd5" stroke-width="1.5"/>
+        </svg>
+      </div>
+
+      <div class="card" style="margin-bottom:14px">
+        <p class="sec-title">Parámetros para la calculadora</p>
+        <table class="out-table" id="out-table"></table>
+
+        <hr class="divider" style="margin:12px 0">
+        <p class="sec-title">Vulcanización</p>
+        <div class="vulc-grid">
+          <div class="vulc-item"><p class="vulc-label">Temperatura</p><p class="vulc-val" id="o-temp">145</p><p class="vulc-unit">°C</p></div>
+          <div class="vulc-item"><p class="vulc-label">Presión</p><p class="vulc-val" id="o-pres">9</p><p class="vulc-unit">bar</p></div>
+          <div class="vulc-item"><p class="vulc-label">Tiempo</p><p class="vulc-val" id="o-time">62</p><p class="vulc-unit">min</p></div>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="copy-btn" onclick="copyParams()">📋 &nbsp;Copiar parámetros al portapapeles</button>
+      <a class="btn-link" href="https://joaquinsalinas27.github.io/calculadora-empalmes/" target="_blank">→ Ir a la Calculadora Fourthane</a>
+    </div>
+  </div>
+</div>
+
+<script>
+var tipo = 'tela';
+
+function setTipo(t) {
+  tipo = t;
+  document.getElementById('btn-tela').className = 'tipo-btn' + (t==='tela' ? ' on' : '');
+  document.getElementById('btn-cable').className = 'tipo-btn' + (t==='cable' ? ' on' : '');
+  document.getElementById('sec-tela').style.display = t==='tela' ? 'block' : 'none';
+  document.getElementById('sec-cable').style.display = t==='cable' ? 'block' : 'none';
+  calc();
+}
+
+function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
+
+function calc() {
+  var B = v('B');
+  var LA = tipo === 'tela' ? v('LA') : v('LA_c');
+  var temp = v('TTEMP'), pres = v('TPRES'), time = v('TTIME');
+
+  var angRad = Math.atan2(LA, B);
+  var angDeg = angRad * 180 / Math.PI;
+
+  document.getElementById('ang-out').textContent = angDeg.toFixed(1);
+  document.getElementById('ang-formula').textContent = 'θ = arctan(' + LA + ' / ' + B + ') = ' + angDeg.toFixed(1) + '°';
+  document.getElementById('o-temp').textContent = temp;
+  document.getElementById('o-pres').textContent = pres;
+  document.getElementById('o-time').textContent = time;
+
+  updateTriangle(B, LA, angDeg);
+
+  var rows = '';
+  if (tipo === 'tela') {
+    var FL = v('FL'), PB = v('PB'), GAP = v('GAP'), NP = v('NP'), ESP = v('ESP');
+    var lv = FL + LA + 2*PB;
+    rows = `
+      <tr><td>Tipo de correa</td><td><span class="badge badge-blue">Tela / EP</span></td></tr>
+      <tr><td>Ancho B</td><td>${B} mm</td></tr>
+      <tr><td>Ángulo bias θ</td><td><strong>${angDeg.toFixed(1)}°</strong></td></tr>
+      <tr><td>N° lonas (np)</td><td>${NP}</td></tr>
+      <tr><td>Espesor correa</td><td>${ESP} mm</td></tr>
+      <tr><td>Long. paso lst</td><td>${FL} mm</td></tr>
+      <tr><td>Long. empalme lv (est.)</td><td>${lv.toFixed(0)} mm</td></tr>
+      <tr><td>Pull back</td><td>${PB} mm</td></tr>
+      <tr><td>Gap</td><td>${GAP} mm</td></tr>
+      <tr><td>Geometría</td><td><span class="badge badge-amber">Bias / inclinado</span></td></tr>
+    `;
+  } else {
+    var DC = v('DC'), TC = v('TC'), NST = v('NST'), LST = v('LST');
+    var LP = 50, LQ = 50;
+    var lv_c = NST*LST + (NST-1)*LP + 2*LQ;
+    rows = `
+      <tr><td>Tipo de correa</td><td><span class="badge badge-amber">Cable acero / ST</span></td></tr>
+      <tr><td>Ancho B</td><td>${B} mm</td></tr>
+      <tr><td>Ángulo bias θ</td><td><strong>${angDeg.toFixed(1)}°</strong></td></tr>
+      <tr><td>Diámetro cable d</td><td>${DC} mm</td></tr>
+      <tr><td>Paso t</td><td>${TC} mm</td></tr>
+      <tr><td>N° escalones (nst)</td><td>${NST}</td></tr>
+      <tr><td>Long. escalón lst</td><td>${LST} mm</td></tr>
+      <tr><td>Long. empalme lv (est.)</td><td>${lv_c.toFixed(0)} mm</td></tr>
+      <tr><td>Geometría</td><td><span class="badge badge-amber">Bias / inclinado</span></td></tr>
+    `;
+  }
+  document.getElementById('out-table').innerHTML = rows;
+}
+
+function updateTriangle(B, LA, angDeg) {
+  var pad = 20, W = 240, H = 140;
+  var maxW = W - 2*pad - 10, maxH = H - pad - 25;
+  var scale = Math.min(maxW / Math.max(B,1), maxH / Math.max(LA,1));
+  var bPx = B * scale, laPx = LA * scale;
+  var x0 = pad, y0 = H - 18;
+  var x1 = x0 + bPx, y1 = y0;
+  var x2 = x1, y2 = y0 - laPx;
+  document.getElementById('tri-poly').setAttribute('points', x0+','+y0+' '+x1+','+y1+' '+x2+','+y2);
+  document.getElementById('tri-hline').setAttribute('x1', x0); document.getElementById('tri-hline').setAttribute('y1', y0);
+  document.getElementById('tri-hline').setAttribute('x2', x1); document.getElementById('tri-hline').setAttribute('y2', y1);
+  document.getElementById('tri-vline').setAttribute('x1', x2); document.getElementById('tri-vline').setAttribute('y1', y2);
+  document.getElementById('tri-vline').setAttribute('x2', x2); document.getElementById('tri-vline').setAttribute('y2', y0);
+  document.getElementById('tri-B').setAttribute('x', (x0+x1)/2);
+  document.getElementById('tri-B').setAttribute('y', H-4);
+  document.getElementById('tri-B').textContent = 'B = '+B+' mm';
+  document.getElementById('tri-LA').setAttribute('x', x2+4);
+  document.getElementById('tri-LA').setAttribute('y', (y1+y2)/2+5);
+  document.getElementById('tri-LA').textContent = 'LA = '+(tipo==='tela'?v('LA'):v('LA_c'))+' mm';
+  document.getElementById('tri-ang').setAttribute('x', x0+22);
+  document.getElementById('tri-ang').setAttribute('y', y0-6);
+}
+
+function copyParams() {
+  var B = v('B');
+  var LA = tipo === 'tela' ? v('LA') : v('LA_c');
+  var angDeg = (Math.atan2(LA, B) * 180 / Math.PI).toFixed(1);
+  var temp = v('TTEMP'), pres = v('TPRES'), time = v('TTIME');
+  var txt = '';
+  if (tipo === 'tela') {
+    txt = '=== PARÁMETROS EMPALME TELA (EP) ===\n' +
+      'Ancho B: ' + v('B') + ' mm\n' +
+      'N° lonas: ' + v('NP') + '\n' +
+      'Espesor correa: ' + v('ESP') + ' mm\n' +
+      'Largo paso (lst): ' + v('FL') + ' mm\n' +
+      'Ángulo bias θ: ' + angDeg + '° (LA=' + LA + ' mm / B=' + B + ' mm)\n' +
+      'Pull back: ' + v('PB') + ' mm\n' +
+      'Gap: ' + v('GAP') + ' mm\n' +
+      'Geometría: Bias / inclinado\n' +
+      '--- Vulcanización ---\n' +
+      'Temperatura: ' + temp + '°C\n' +
+      'Presión: ' + pres + ' bar\n' +
+      'Tiempo: ' + time + ' min';
+  } else {
+    txt = '=== PARÁMETROS EMPALME CABLE (ST) ===\n' +
+      'Ancho B: ' + v('B') + ' mm\n' +
+      'Diámetro cable d: ' + v('DC') + ' mm\n' +
+      'Paso t: ' + v('TC') + ' mm\n' +
+      'N° escalones: ' + v('NST') + '\n' +
+      'Largo escalón lst: ' + v('LST') + ' mm\n' +
+      'Ángulo bias θ: ' + angDeg + '° (LA=' + LA + ' mm / B=' + B + ' mm)\n' +
+      'Geometría: Bias / inclinado\n' +
+      '--- Vulcanización ---\n' +
+      'Temperatura: ' + temp + '°C\n' +
+      'Presión: ' + pres + ' bar\n' +
+      'Tiempo: ' + time + ' min';
+  }
+  navigator.clipboard.writeText(txt).then(function() {
+    var btn = document.getElementById('copy-btn');
+    btn.textContent = '✅  ¡Copiado!';
+    btn.className = 'btn-primary copied';
+    setTimeout(function(){ btn.textContent = '📋  Copiar parámetros al portapapeles'; btn.className = 'btn-primary'; }, 2000);
+  });
+}
+
+calc();
+</script>
+</body>
+</html>
